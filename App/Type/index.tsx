@@ -8,3 +8,14 @@ export interface VideoModel {
   comments: number;
   avatarUri: string;
 }
+
+export interface VideoData {
+  avatarUri: string;
+  caption: string;
+  channelName: string;
+  comments: number;
+  id: number;
+  likes: number;
+  musicName: string;
+  uri: string;
+}

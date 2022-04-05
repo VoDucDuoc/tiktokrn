@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from './Containers/HomeScreen';
-import {Image} from 'react-native';
+import {Animated, Image} from 'react-native';
 import {Images} from './Themes/Images';
 import styles from './Styles/AppStyles';
 // import styles from './Styles/AppStyles';
@@ -10,6 +10,8 @@ import styles from './Styles/AppStyles';
 const BottomTab = createBottomTabNavigator();
 
 const App = () => {
+  const scale = useRef(new Animated.Value(1.2)).current;
+
   return (
     <NavigationContainer>
       <BottomTab.Navigator
@@ -17,6 +19,7 @@ const App = () => {
           tabBarStyle: {backgroundColor: 'black'},
           tabBarActiveTintColor: 'white',
           headerShown: false,
+          tabBarItemStyle: {paddingVertical: 5},
         }}>
         <BottomTab.Screen
           name="Home"
@@ -53,13 +56,10 @@ const App = () => {
           component={HomeScreen}
           options={{
             tabBarLabel: () => null,
-            tabBarIcon: ({focused}) => (
-              <Image
+            tabBarIcon: () => (
+              <Animated.Image
                 source={Images.newVideo}
-                style={[
-                  styles.newVideoButton,
-                  focused && styles.bottomTabIconFocused,
-                ]}
+                style={[styles.newVideoButton]}
               />
             ),
           }}
