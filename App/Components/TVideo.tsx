@@ -1,11 +1,14 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
   Easing,
   Image,
+  ImageBackground,
+  LayoutChangeEvent,
   StatusBar,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {VideoData} from '../Type';
@@ -28,7 +31,22 @@ function TVideo({data}: TVideoProps) {
     WINDOW_HEIGHT - bottomTabHeight - (StatusBar.currentHeight || 0);
 
   const discAnimatedValue = useRef(new Animated.Value(0)).current;
-  const musicNameAnimatedValue = useRef(new Animated.Value(0)).current;
+  const firstMusicNameAnimatedValue = useRef(new Animated.Value(0)).current;
+  const secondMusicNameAnimatedValue = useRef(new Animated.Value(0)).current;
+
+  const [widthMusicNameView, setWidthMusicNameView] = useState(0);
+  const [widthMusicNameText, setWidthMusicNameText] = useState(0);
+
+  const onLayoutMusicNameView = (event: LayoutChangeEvent) => {
+    const {width} = event.nativeEvent.layout;
+    setWidthMusicNameView(width);
+  };
+
+  const onLayoutMusicNameText = (event: LayoutChangeEvent) => {
+    const {width} = event.nativeEvent.layout;
+    setWidthMusicNameText(width);
+  };
+
   const discAnimation = {
     transform: [
       {
@@ -39,16 +57,29 @@ function TVideo({data}: TVideoProps) {
       },
     ],
   };
-  const musicNameAnimation = {
+
+  const firstMusicNameAnimation = {
     transform: [
       {
-        translateX: musicNameAnimatedValue.interpolate({
-          inputRange: [0, 0.5, 1],
-          outputRange: [0, -100, 100],
+        translateX: firstMusicNameAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [widthMusicNameView, -widthMusicNameText],
         }),
       },
     ],
   };
+
+  const secondMusicNameAnimation = {
+    transform: [
+      {
+        translateX: secondMusicNameAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [widthMusicNameView, -widthMusicNameText],
+        }),
+      },
+    ],
+  };
+
   useEffect(() => {
     Animated.loop(
       Animated.timing(discAnimatedValue, {
@@ -59,14 +90,28 @@ function TVideo({data}: TVideoProps) {
       }),
     ).start();
     Animated.loop(
-      Animated.timing(musicNameAnimatedValue, {
+      Animated.timing(firstMusicNameAnimatedValue, {
         toValue: 1,
-        duration: 5000,
+        duration: 4000,
         easing: Easing.linear,
         useNativeDriver: false,
       }),
     ).start();
-  }, [discAnimatedValue, musicNameAnimatedValue]);
+    const timeout = setTimeout(() => {
+      Animated.loop(
+        Animated.timing(secondMusicNameAnimatedValue, {
+          toValue: 1,
+          duration: 4000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ).start();
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -80,6 +125,7 @@ function TVideo({data}: TVideoProps) {
         ]}
         resizeMode="cover"
         muted
+        repeat
       />
       <View style={styles.bottom}>
         <View style={styles.bottomLeft}>
@@ -91,11 +137,24 @@ function TVideo({data}: TVideoProps) {
           </Text>
           <View style={styles.wrapMusic}>
             <Image style={styles.musicNoteIcon} source={Images.musicNoteV2} />
-            <View style={styles.overflowAnimated}>
-              <Animated.Text style={[styles.normalText, musicNameAnimation]}>
+            <View
+              onLayout={onLayoutMusicNameView}
+              style={styles.wrapAnimationMusic}>
+              <Animated.Text
+                onLayout={onLayoutMusicNameText}
+                style={[
+                  styles.normalText,
+                  firstMusicNameAnimation,
+                  styles.firstMusicName,
+                ]}>
                 {musicName}
               </Animated.Text>
-              <Animated.Text style={[styles.normalText, musicNameAnimation]}>
+              <Animated.Text
+                style={[
+                  styles.normalText,
+                  secondMusicNameAnimation,
+                  styles.secondMusicName,
+                ]}>
                 {musicName}
               </Animated.Text>
             </View>
@@ -106,6 +165,34 @@ function TVideo({data}: TVideoProps) {
             style={[styles.discIcon, discAnimation]}
             source={Images.disc}
           />
+          <View
+            style={[
+              styles.wrapDetailVideo,
+              {
+                height: WINDOW_HEIGHT / 3,
+              },
+            ]}>
+            <ImageBackground
+              source={{uri: avatarUri}}
+              imageStyle={styles.avatarStyle}
+              style={styles.wrapPlus}>
+              <TouchableOpacity style={styles.plusButton}>
+                <Image source={Images.plusButton} style={styles.plusIcon} />
+              </TouchableOpacity>
+            </ImageBackground>
+            <View style={styles.wrapLikes}>
+              <Image source={Images.heart} style={styles.icon40} />
+              <Text style={styles.numberText}>{likes}</Text>
+            </View>
+            <View style={styles.wrapLikes}>
+              <Image source={Images.messageCircle} style={styles.icon40} />
+              <Text style={styles.numberText}>{comments}</Text>
+            </View>
+            <View style={styles.wrapLikes}>
+              <Image source={Images.reply} style={styles.icon40} />
+              <Text style={styles.numberText}>{comments}</Text>
+            </View>
+          </View>
         </View>
       </View>
     </View>
