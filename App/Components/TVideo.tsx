@@ -16,6 +16,7 @@ import Video from 'react-native-video';
 import styles from './Styles/TVideoStyles';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {Images} from '../Themes/Images';
+import Normalize from '../Themes/Normalize';
 
 interface TVideoProps {
   data: VideoData;
@@ -33,6 +34,9 @@ function TVideo({data}: TVideoProps) {
   const discAnimatedValue = useRef(new Animated.Value(0)).current;
   const firstMusicNameAnimatedValue = useRef(new Animated.Value(0)).current;
   const secondMusicNameAnimatedValue = useRef(new Animated.Value(0)).current;
+  const firstMusicNoteAnimatedValue = useRef(new Animated.Value(0)).current;
+  const secondMusicNoteAnimatedValue = useRef(new Animated.Value(0)).current;
+  const thirdMusicNoteAnimatedValue = useRef(new Animated.Value(0)).current;
 
   const [widthMusicNameView, setWidthMusicNameView] = useState(0);
   const [widthMusicNameText, setWidthMusicNameText] = useState(0);
@@ -80,6 +84,105 @@ function TVideo({data}: TVideoProps) {
     ],
   };
 
+  const firstMusicNoteAnimation = {
+    transform: [
+      {
+        rotate: firstMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '45deg'],
+        }),
+      },
+      {
+        translateX: firstMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-50)],
+        }),
+      },
+      {
+        translateY: firstMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-10)],
+        }),
+      },
+      {
+        scale: firstMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, 1, 1],
+        }),
+      },
+    ],
+    opacity: firstMusicNoteAnimatedValue.interpolate({
+      inputRange: [0, 0.8, 1],
+      outputRange: [0, 1, 0],
+    }),
+  };
+
+  const secondMusicNoteAnimation = {
+    transform: [
+      {
+        rotate: secondMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '45deg'],
+        }),
+      },
+      {
+        translateX: secondMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-50)],
+        }),
+      },
+      {
+        translateY: secondMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-10)],
+        }),
+      },
+      {
+        scale: secondMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, 1, 1],
+        }),
+      },
+    ],
+    opacity: secondMusicNoteAnimatedValue.interpolate({
+      inputRange: [0, 0.8, 1],
+      outputRange: [0, 1, 0],
+    }),
+  };
+
+  const thirdMusicNoteAnimation = {
+    transform: [
+      {
+        rotate: thirdMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '45deg'],
+        }),
+      },
+      {
+        translateX: thirdMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-50)],
+        }),
+      },
+      {
+        translateY: thirdMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, Normalize(-10)],
+        }),
+      },
+      {
+        scale: thirdMusicNoteAnimatedValue.interpolate({
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, 1, 1],
+        }),
+      },
+    ],
+    opacity: thirdMusicNoteAnimatedValue.interpolate({
+      inputRange: [0, 0.8, 1],
+      outputRange: [0, 1, 0],
+    }),
+  };
+
   useEffect(() => {
     Animated.loop(
       Animated.timing(discAnimatedValue, {
@@ -97,6 +200,16 @@ function TVideo({data}: TVideoProps) {
         useNativeDriver: false,
       }),
     ).start();
+
+    Animated.loop(
+      Animated.timing(firstMusicNoteAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    ).start();
+
     const timeout = setTimeout(() => {
       Animated.loop(
         Animated.timing(secondMusicNameAnimatedValue, {
@@ -108,8 +221,32 @@ function TVideo({data}: TVideoProps) {
       ).start();
     }, 2000);
 
+    const timeoutSecondMusicNote = setTimeout(() => {
+      Animated.loop(
+        Animated.timing(secondMusicNoteAnimatedValue, {
+          toValue: 1,
+          duration: 3000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ).start();
+    }, 1000);
+
+    const timeoutThirdMusicNote = setTimeout(() => {
+      Animated.loop(
+        Animated.timing(thirdMusicNoteAnimatedValue, {
+          toValue: 1,
+          duration: 3000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ).start();
+    }, 2000);
+
     return () => {
       clearTimeout(timeout);
+      clearTimeout(timeoutSecondMusicNote);
+      clearTimeout(timeoutThirdMusicNote);
     };
   }, []);
 
@@ -165,31 +302,53 @@ function TVideo({data}: TVideoProps) {
             style={[styles.discIcon, discAnimation]}
             source={Images.disc}
           />
+          <Animated.Image
+            style={[styles.musicNoteAnimatedIcon, firstMusicNoteAnimation]}
+            source={Images.musicNote}
+          />
+          <Animated.Image
+            style={[styles.musicNoteAnimatedIcon, secondMusicNoteAnimation]}
+            source={Images.musicNote}
+          />
+          <Animated.Image
+            style={[styles.musicNoteAnimatedIcon, thirdMusicNoteAnimation]}
+            source={Images.musicNote}
+          />
+
           <View
             style={[
               styles.wrapDetailVideo,
               {
-                height: WINDOW_HEIGHT / 3,
+                height: WINDOW_HEIGHT / 2.7,
               },
             ]}>
             <ImageBackground
               source={{uri: avatarUri}}
               imageStyle={styles.avatarStyle}
               style={styles.wrapPlus}>
-              <TouchableOpacity style={styles.plusButton}>
+              <TouchableOpacity
+                style={styles.plusButton}
+                activeOpacity={1}
+                onPress={() => console.log('xx')}>
                 <Image source={Images.plusButton} style={styles.plusIcon} />
               </TouchableOpacity>
             </ImageBackground>
             <View style={styles.wrapLikes}>
-              <Image source={Images.heart} style={styles.icon40} />
+              <TouchableOpacity activeOpacity={1}>
+                <Image source={Images.heart} style={styles.icon40} />
+              </TouchableOpacity>
               <Text style={styles.numberText}>{likes}</Text>
             </View>
             <View style={styles.wrapLikes}>
-              <Image source={Images.messageCircle} style={styles.icon40} />
+              <TouchableOpacity activeOpacity={1}>
+                <Image source={Images.messageCircle} style={styles.icon40} />
+              </TouchableOpacity>
               <Text style={styles.numberText}>{comments}</Text>
             </View>
             <View style={styles.wrapLikes}>
-              <Image source={Images.reply} style={styles.icon40} />
+              <TouchableOpacity activeOpacity={1}>
+                <Image source={Images.reply} style={styles.icon40} />
+              </TouchableOpacity>
               <Text style={styles.numberText}>{comments}</Text>
             </View>
           </View>

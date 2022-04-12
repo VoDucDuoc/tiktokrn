@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'red',
   },
   wrapAnimationMusic: {
     overflow: 'hidden',
@@ -64,7 +63,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   secondMusicName: {
-    alignSelf: 'flex-start',
     position: 'absolute',
   },
   icon40: {
@@ -97,6 +95,23 @@ const styles = StyleSheet.create({
   wrapLikes: {
     alignItems: 'center',
   },
-  plusButton: {position: 'absolute', bottom: Normalize(-10)},
+  plusButton: {
+    position: 'absolute',
+    bottom: Normalize(-10),
+  },
+  musicNoteAnimatedIcon: {
+    width: Normalize(12),
+    height: Normalize(12),
+    position: 'absolute',
+    bottom: Normalize(-10),
+    tintColor: 'white',
+    right: Normalize(13),
+    opacity: 0,
+    transform: [
+      {
+        scale: 0.5,
+      },
+    ],
+  },
 });
 export default styles;
