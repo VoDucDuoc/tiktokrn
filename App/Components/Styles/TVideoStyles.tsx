@@ -4,6 +4,7 @@ import Normalize from '../../Themes/Normalize';
 const styles = StyleSheet.create({
   videoItem: {
     width: '100%',
+    height: '100%',
     position: 'absolute',
   },
   container: {

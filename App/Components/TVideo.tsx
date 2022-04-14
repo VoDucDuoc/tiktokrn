@@ -20,11 +20,13 @@ import Normalize from '../Themes/Normalize';
 
 interface TVideoProps {
   data: VideoData;
+  isActive: boolean;
 }
 
-const WINDOW_HEIGHT = Dimensions.get('window').height;
+export const WINDOW_HEIGHT = Dimensions.get('window').height;
+const WINDOW_WIDTH = Dimensions.get('window').width;
 
-function TVideo({data}: TVideoProps) {
+function TVideo({data, isActive}: TVideoProps) {
   const {avatarUri, caption, channelName, comments, likes, musicName, uri} =
     data;
   const bottomTabHeight = useBottomTabBarHeight();
@@ -38,6 +40,17 @@ function TVideo({data}: TVideoProps) {
   const secondMusicNoteAnimatedValue = useRef(new Animated.Value(0)).current;
   const thirdMusicNoteAnimatedValue = useRef(new Animated.Value(0)).current;
 
+  const discAnimatedRef = useRef<any>();
+
+  const firstMusicNameAnimatedRef = useRef<any>();
+  const secondMusicNameAnimatedRef = useRef<any>();
+
+  const firstMusicNoteAnimatedRef = useRef<any>();
+  const secondMusicNoteAnimatedRef = useRef<any>();
+  const thirdMusicNoteAnimatedRef = useRef<any>();
+
+  const musicNoteAnimatedRef = useRef<any>();
+
   const [widthMusicNameView, setWidthMusicNameView] = useState(0);
   const [widthMusicNameText, setWidthMusicNameText] = useState(0);
 
@@ -49,6 +62,74 @@ function TVideo({data}: TVideoProps) {
   const onLayoutMusicNameText = (event: LayoutChangeEvent) => {
     const {width} = event.nativeEvent.layout;
     setWidthMusicNameText(width);
+  };
+
+  const onTriggerAnimation = () => {
+    discAnimatedRef.current = Animated.loop(
+      Animated.timing(discAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    firstMusicNameAnimatedRef.current = Animated.loop(
+      Animated.timing(firstMusicNameAnimatedValue, {
+        toValue: 1,
+        duration: 4000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    secondMusicNameAnimatedRef.current = Animated.loop(
+      Animated.timing(secondMusicNameAnimatedValue, {
+        toValue: 1,
+        duration: 4000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    firstMusicNoteAnimatedRef.current = Animated.loop(
+      Animated.timing(firstMusicNoteAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    secondMusicNoteAnimatedRef.current = Animated.loop(
+      Animated.timing(secondMusicNoteAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    thirdMusicNoteAnimatedRef.current = Animated.loop(
+      Animated.timing(thirdMusicNoteAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+
+    discAnimatedRef.current.start();
+    firstMusicNameAnimatedRef.current.start();
+    firstMusicNoteAnimatedRef.current.start();
+
+    setTimeout(() => {
+      secondMusicNameAnimatedRef.current.start();
+      thirdMusicNoteAnimatedRef.current.start();
+    }, 2000);
+    setTimeout(() => {
+      secondMusicNoteAnimatedRef.current.start();
+    }, 1000);
   };
 
   const discAnimation = {
@@ -88,20 +169,20 @@ function TVideo({data}: TVideoProps) {
     transform: [
       {
         rotate: firstMusicNoteAnimatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: ['0deg', '45deg'],
+          inputRange: [0, 0.1, 1],
+          outputRange: ['0deg', '-20deg', '-20deg'],
         }),
       },
       {
         translateX: firstMusicNoteAnimatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, Normalize(-50)],
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, Normalize(-20), Normalize(-40)],
         }),
       },
       {
         translateY: firstMusicNoteAnimatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, Normalize(-10)],
+          outputRange: [0, Normalize(-50)],
         }),
       },
       {
@@ -127,8 +208,8 @@ function TVideo({data}: TVideoProps) {
       },
       {
         translateX: secondMusicNoteAnimatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, Normalize(-50)],
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, Normalize(-30), Normalize(-60)],
         }),
       },
       {
@@ -154,20 +235,20 @@ function TVideo({data}: TVideoProps) {
     transform: [
       {
         rotate: thirdMusicNoteAnimatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: ['0deg', '45deg'],
+          inputRange: [0, 0.1, 1],
+          outputRange: ['0deg', '-20deg', '-20deg'],
         }),
       },
       {
         translateX: thirdMusicNoteAnimatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, Normalize(-50)],
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, Normalize(-20), Normalize(-40)],
         }),
       },
       {
         translateY: thirdMusicNoteAnimatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, Normalize(-10)],
+          outputRange: [0, Normalize(-50)],
         }),
       },
       {
@@ -184,85 +265,42 @@ function TVideo({data}: TVideoProps) {
   };
 
   useEffect(() => {
-    Animated.loop(
-      Animated.timing(discAnimatedValue, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-    ).start();
-    Animated.loop(
-      Animated.timing(firstMusicNameAnimatedValue, {
-        toValue: 1,
-        duration: 4000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-    ).start();
-
-    Animated.loop(
-      Animated.timing(firstMusicNoteAnimatedValue, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-    ).start();
-
-    const timeout = setTimeout(() => {
-      Animated.loop(
-        Animated.timing(secondMusicNameAnimatedValue, {
-          toValue: 1,
-          duration: 4000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ).start();
-    }, 2000);
-
-    const timeoutSecondMusicNote = setTimeout(() => {
-      Animated.loop(
-        Animated.timing(secondMusicNoteAnimatedValue, {
-          toValue: 1,
-          duration: 3000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ).start();
-    }, 1000);
-
-    const timeoutThirdMusicNote = setTimeout(() => {
-      Animated.loop(
-        Animated.timing(thirdMusicNoteAnimatedValue, {
-          toValue: 1,
-          duration: 3000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ).start();
-    }, 2000);
-
-    return () => {
-      clearTimeout(timeout);
-      clearTimeout(timeoutSecondMusicNote);
-      clearTimeout(timeoutThirdMusicNote);
-    };
-  }, []);
+    if (isActive) {
+      onTriggerAnimation();
+    } else {
+      discAnimatedRef?.current?.stop();
+      firstMusicNameAnimatedRef?.current?.stop();
+      secondMusicNameAnimatedRef?.current?.stop();
+      firstMusicNoteAnimatedRef?.current?.stop();
+      secondMusicNoteAnimatedRef?.current?.stop();
+      thirdMusicNoteAnimatedRef?.current?.stop();
+      discAnimatedValue.setValue(0);
+      firstMusicNameAnimatedValue.setValue(0);
+      secondMusicNameAnimatedValue.setValue(0);
+      firstMusicNoteAnimatedValue.setValue(0);
+      secondMusicNoteAnimatedValue.setValue(0);
+      thirdMusicNoteAnimatedValue.setValue(0);
+    }
+  }, [isActive]);
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        {
+          height: videoHeight,
+          width: WINDOW_WIDTH,
+        },
+      ]}
+      activeOpacity={1}
+      onPress={() => console.log('xxxx')}>
       <Video
         source={{uri}}
-        style={[
-          styles.videoItem,
-          {
-            height: videoHeight,
-          },
-        ]}
+        style={[styles.videoItem]}
         resizeMode="cover"
         muted
         repeat
+        paused={!isActive}
       />
       <View style={styles.bottom}>
         <View style={styles.bottomLeft}>
@@ -304,7 +342,7 @@ function TVideo({data}: TVideoProps) {
           />
           <Animated.Image
             style={[styles.musicNoteAnimatedIcon, firstMusicNoteAnimation]}
-            source={Images.musicNote}
+            source={Images.musicNoteV2}
           />
           <Animated.Image
             style={[styles.musicNoteAnimatedIcon, secondMusicNoteAnimation]}
@@ -354,7 +392,7 @@ function TVideo({data}: TVideoProps) {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
