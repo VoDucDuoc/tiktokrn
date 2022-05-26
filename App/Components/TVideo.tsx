@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -49,8 +49,6 @@ function TVideo({data, isActive}: TVideoProps) {
   const secondMusicNoteAnimatedRef = useRef<any>();
   const thirdMusicNoteAnimatedRef = useRef<any>();
 
-  const musicNoteAnimatedRef = useRef<any>();
-
   const [widthMusicNameView, setWidthMusicNameView] = useState(0);
   const [widthMusicNameText, setWidthMusicNameText] = useState(0);
 
@@ -64,7 +62,7 @@ function TVideo({data, isActive}: TVideoProps) {
     setWidthMusicNameText(width);
   };
 
-  const onTriggerAnimation = () => {
+  const onTriggerAnimation = useCallback(() => {
     discAnimatedRef.current = Animated.loop(
       Animated.timing(discAnimatedValue, {
         toValue: 1,
@@ -130,7 +128,7 @@ function TVideo({data, isActive}: TVideoProps) {
     setTimeout(() => {
       secondMusicNoteAnimatedRef.current.start();
     }, 1000);
-  };
+  }, []);
 
   const discAnimation = {
     transform: [
